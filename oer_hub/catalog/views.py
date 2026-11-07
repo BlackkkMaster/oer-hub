@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView
@@ -61,6 +62,10 @@ class CourseCreateView(LoginRequiredMixin, TeacherRequiredMixin, TitleMixin, Cre
         response = super().form_valid(form)
         try:
             sync_course_repository(self.object)
-        except Exception:
-            pass
+            messages.success(self.request, "Курс и репозиторий в Git успешно созданы!")
+        except Exception as exc:
+            messages.warning(
+                self.request,
+                f"Курс сохранен, но ошибка при создании Git-репозитория: {exc}",
+            )
         return response

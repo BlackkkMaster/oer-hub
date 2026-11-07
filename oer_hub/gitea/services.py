@@ -30,8 +30,11 @@ def sync_course_repository(course):
         description=course.description or course.name,
     )
 
-    clone_url = repo_data.get("clone_url") or f"{client.base_url}/{org_name}/{course.slug}.git"
-    html_url = repo_data.get("html_url") or f"{client.base_url}/{org_name}/{course.slug}"
+    external_base = os.getenv(
+        "GITEA_EXTERNAL_URL", "http://localhost:3000"
+    ).rstrip("/")
+    clone_url = f"{external_base}/{org_name}/{course.slug}.git"
+    html_url = f"{external_base}/{org_name}/{course.slug}"
 
     course.git_repository_url = html_url
     course.git_clone_url = clone_url
