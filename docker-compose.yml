@@ -1,0 +1,101 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: oer_hub_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-oer_hub}
+      POSTGRES_USER: ${POSTGRES_USER:-oer_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-oer_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    profiles: ["prod", "full"]
+
+  redis:
+    image: redis:7-alpine
+    container_name: oer_hub_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    profiles: ["dev", "prod", "default"]
+
+  gitea:
+    image: gitea/gitea:1.22-rootless
+    container_name: oer_hub_gitea
+    restart: unless-stopped
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__server__DOMAIN=localhost
+      - GITEA__server__SSH_PORT=2222
+      - GITEA__server__ROOT_URL=http://localhost:3000/
+      - GITEA__security__INSTALL_LOCK=true
+    ports:
+      - "3000:3000"
+      - "2222:2222"
+    volumes:
+      - gitea_data:/var/lib/gitea
+    profiles: ["dev", "prod", "default"]
+
+  web-dev:
+    build:
+      context: .
+      target: dev
+    container_name: oer_hub_web_dev
+    restart: unless-stopped
+    command: >
+      sh -c "/app/.venv/bin/python manage.py makemigrations users catalog &&
+             /app/.venv/bin/python manage.py migrate &&
+             /app/.venv/bin/python manage.py create_admin &&
+             /app/.venv/bin/python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./oer_hub:/app/oer_hub
+      - dev_sqlite_data:/app/oer_hub/data
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_DEBUG=True
+      - DJANGO_DB_ENGINE=sqlite3
+      - GITEA_URL=http://gitea:3000
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - gitea
+      - redis
+    profiles: ["dev", "default"]
+
+  web-prod:
+    build:
+      context: .
+      target: prod
+    container_name: oer_hub_web_prod
+    restart: unless-stopped
+    command: >
+      sh -c "/app/.venv/bin/python manage.py migrate &&
+             /app/.venv/bin/python manage.py create_admin &&
+             /app/.venv/bin/gunicorn oer_hub.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_DEBUG=False
+      - DJANGO_DB_ENGINE=postgresql
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - GITEA_URL=http://gitea:3000
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - gitea
+      - redis
+    profiles: ["prod"]
+
+volumes:
+  postgres_data:
+  gitea_data:
+  dev_sqlite_data:

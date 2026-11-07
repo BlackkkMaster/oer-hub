@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Кафедральный репозиторий образовательных ресурсов</h1>
+<p>Централизованное хранение, версионирование и публикация учебных материалов кафедры.</p>
+
+<section>
+    <h2>Семестры</h2>
+    <ul>
+        {% for semester in active_semesters %}
+            <li>
+                <a href="{% url 'catalog:course_list' %}?semester={{ semester.id }}">{{ semester.name }}</a>
+            </li>
+        {% empty %}
+            <li>Семестры пока не добавлены.</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section>
+    <h2>Последние добавленные курсы</h2>
+    <ul>
+        {% for course in latest_courses %}
+            <li>
+                <strong><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></strong>
+                ({{ course.discipline.name }}, {{ course.semester.name }})
+                — Преподаватель: {{ course.teacher.get_full_name|default:course.teacher.username }}
+            </li>
+        {% empty %}
+            <li>Курсы пока не созданы.</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Создание нового курса</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Создать курс и репозиторий Git</button>
+</form>
+<p><a href="{% url 'catalog:course_list' %}">Отмена</a></p>
+{% endblock %}

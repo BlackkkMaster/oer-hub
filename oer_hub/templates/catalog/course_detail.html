@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ course.name }}</h1>
+<p><strong>Дисциплина:</strong> {{ course.discipline.name }}</p>
+<p><strong>Семестр:</strong> {{ course.semester.name }}</p>
+<p><strong>Преподаватель:</strong> {{ course.teacher.get_full_name|default:course.teacher.username }}</p>
+
+{% if course.description %}
+    <div>
+        <h3>Описание курса</h3>
+        <p>{{ course.description|linebreaks }}</p>
+    </div>
+{% endif %}
+
+<hr>
+
+<h3>Git-репозиторий курса (Gitea)</h3>
+{% if course.git_repository_url %}
+    <p>Веб-интерфейс: <a href="{{ course.git_repository_url }}" target="_blank">{{ course.git_repository_url }}</a></p>
+    <p>Команда клонирования: <code>git clone {{ course.git_clone_url }}</code></p>
+{% else %}
+    <p>Репозиторий синхронизируется или ещё не создан в Gitea.</p>
+{% endif %}
+
+<hr>
+
+<h3>Материалы и релизы</h3>
+{% if course.materials.all %}
+    <ul>
+        {% for material in course.materials.all %}
+            <li>
+                <strong>{{ material.title }}</strong> ({{ material.release_version }})
+                {% if material.description %}<p>{{ material.description }}</p>{% endif %}
+                {% if material.file %}
+                    <p><a href="{{ material.file.url }}" download>Скачать материал</a></p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Материалы к данному курсу пока не загружены.</p>
+{% endif %}
+
+<p><a href="{% url 'catalog:course_list' %}">← Вернуться в каталог</a></p>
+{% endblock %}

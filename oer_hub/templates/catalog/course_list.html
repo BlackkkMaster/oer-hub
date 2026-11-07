@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Каталог учебных курсов</h1>
+
+<div>
+    <strong>Фильтр по семестрам:</strong>
+    <a href="{% url 'catalog:course_list' %}">Все семестры</a>
+    {% for sem in semesters %}
+        | <a href="{% url 'catalog:course_list' %}?semester={{ sem.id }}">{{ sem.name }}</a>
+    {% endfor %}
+</div>
+
+<hr>
+
+{% if courses %}
+    <ul>
+        {% for course in courses %}
+            <li>
+                <h3><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></h3>
+                <p>Дисциплина: {{ course.discipline.name }} | Семестр: {{ course.semester.name }}</p>
+                <p>Преподаватель: {{ course.teacher.get_full_name|default:course.teacher.username }}</p>
+                {% if course.git_repository_url %}
+                    <p>Git репозиторий: <a href="{{ course.git_repository_url }}" target="_blank">{{ course.git_repository_url }}</a></p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Курсов по выбранному фильтру не найдено.</p>
+{% endif %}
+{% endblock %}

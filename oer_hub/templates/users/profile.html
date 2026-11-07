@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Профиль пользователя {{ user.username }}</h1>
+
+<section>
+    <h3>Информация о пользователе</h3>
+    <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
+    <p><strong>Электронная почта:</strong> {{ user.email }}</p>
+    <p><strong>Роль:</strong> {{ user.profile.get_role_display }}</p>
+    <p><strong>Кафедра:</strong> {{ user.profile.department|default:"Не указана" }}</p>
+    <p><strong>Git логин:</strong> {{ user.profile.git_username|default:"Не привязан" }}</p>
+    {% if user.profile.bio %}
+        <p><strong>О себе:</strong> {{ user.profile.bio }}</p>
+    {% endif %}
+</section>
+
+<hr>
+
+<section>
+    <h3>Редактирование профиля</h3>
+    <form method="post">
+        {% csrf_token %}
+        <h4>Учетная запись</h4>
+        {{ user_form.as_p }}
+        <h4>Профиль кафедры</h4>
+        {{ profile_form.as_p }}
+        <button type="submit">Сохранить изменения</button>
+    </form>
+</section>
+{% endblock %}
