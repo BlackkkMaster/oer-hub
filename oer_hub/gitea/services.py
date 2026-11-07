@@ -14,9 +14,7 @@ def sync_user_account(user, password: Optional[str] = None):
     user_pass = password or os.getenv(
         "GITEA_DEFAULT_USER_PASSWORD", "OerUserSecret2026!"
     )
-    client.ensure_user(
-        username=git_username, email=user.email, password=user_pass
-    )
+    client.ensure_user(username=git_username, email=user.email, password=user_pass)
 
     profile = getattr(user, "profile", None)
     if profile and not profile.git_username:
@@ -34,9 +32,7 @@ def sync_course_repository(course):
         description=course.description or course.name,
     )
 
-    external_base = os.getenv(
-        "GITEA_EXTERNAL_URL", "http://localhost:3000"
-    ).rstrip("/")
+    external_base = os.getenv("GITEA_EXTERNAL_URL", "http://localhost:3000").rstrip("/")
     clone_url = f"{external_base}/{org_name}/{course.slug}.git"
     html_url = f"{external_base}/{org_name}/{course.slug}"
 

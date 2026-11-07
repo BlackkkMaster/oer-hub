@@ -65,9 +65,7 @@ class GiteaClient:
                     **kwargs,
                 )
         except httpx.RequestError as exc:
-            raise GiteaAPIError(
-                f"Network error connecting to Gitea: {exc}"
-            ) from exc
+            raise GiteaAPIError(f"Network error connecting to Gitea: {exc}") from exc
 
         if response.status_code >= 400:
             raise GiteaAPIError(
@@ -86,9 +84,7 @@ class GiteaClient:
     def get_organization(self, org: str) -> dict[str, Any]:
         return self._request("GET", f"/orgs/{org}")
 
-    def create_organization(
-        self, name: str, description: str = ""
-    ) -> dict[str, Any]:
+    def create_organization(self, name: str, description: str = "") -> dict[str, Any]:
         payload = {
             "username": name,
             "full_name": name,
@@ -97,9 +93,7 @@ class GiteaClient:
         }
         return self._request("POST", "/orgs", json=payload)
 
-    def ensure_organization(
-        self, name: str, description: str = ""
-    ) -> dict[str, Any]:
+    def ensure_organization(self, name: str, description: str = "") -> dict[str, Any]:
         try:
             return self.get_organization(name)
         except GiteaAPIError as exc:
@@ -126,9 +120,7 @@ class GiteaClient:
     def get_user(self, username: str) -> dict[str, Any]:
         return self._request("GET", f"/users/{username}")
 
-    def ensure_user(
-        self, username: str, email: str, password: str
-    ) -> dict[str, Any]:
+    def ensure_user(self, username: str, email: str, password: str) -> dict[str, Any]:
         try:
             return self.get_user(username)
         except GiteaAPIError as exc:
@@ -193,6 +185,4 @@ class GiteaClient:
             "events": ["push", "release"],
             "active": True,
         }
-        return self._request(
-            "POST", f"/repos/{owner}/{repo}/hooks", json=payload
-        )
+        return self._request("POST", f"/repos/{owner}/{repo}/hooks", json=payload)

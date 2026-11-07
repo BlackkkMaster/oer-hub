@@ -71,9 +71,7 @@ class CourseCreateView(
         response = super().form_valid(form)
         try:
             sync_course_repository(self.object)
-            messages.success(
-                self.request, "Курс и репозиторий в Git успешно созданы!"
-            )
+            messages.success(self.request, "Курс и репозиторий в Git успешно созданы!")
         except Exception as exc:
             messages.warning(
                 self.request,

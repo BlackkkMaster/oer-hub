@@ -51,9 +51,7 @@ if DEBUG:
 
         if debug_toolbar:
             INSTALLED_APPS.append("debug_toolbar")
-            MIDDLEWARE.insert(
-                0, "debug_toolbar.middleware.DebugToolbarMiddleware"
-            )
+            MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
             INTERNAL_IPS = ["127.0.0.1", "localhost", "0.0.0.0"]
     except ImportError:
         pass
@@ -106,24 +104,17 @@ AUTHENTICATION_BACKENDS = ["users.backends.AuthBackend"]
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
-            "django.contrib.auth.password_validation."
-            "UserAttributeSimilarityValidator"
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
         ),
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation.MinimumLengthValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation.MinimumLengthValidator"),
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation.CommonPasswordValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation.CommonPasswordValidator"),
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation.NumericPasswordValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation.NumericPasswordValidator"),
     },
 ]
 

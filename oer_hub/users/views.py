@@ -38,12 +38,10 @@ class ProfileView(LoginRequiredMixin, TitleMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context["user_form"] = kwargs.get("user_form") or UserUpdateForm(
-            instance=user
+        context["user_form"] = kwargs.get("user_form") or UserUpdateForm(instance=user)
+        context["profile_form"] = kwargs.get("profile_form") or ProfileUpdateForm(
+            instance=getattr(user, "profile", None)
         )
-        context["profile_form"] = kwargs.get(
-            "profile_form"
-        ) or ProfileUpdateForm(instance=getattr(user, "profile", None))
         return context
 
     def post(self, request, *args, **kwargs):
@@ -57,7 +55,5 @@ class ProfileView(LoginRequiredMixin, TitleMixin, TemplateView):
             profile_form.save()
             return redirect("users:profile")
         return self.render_to_response(
-            self.get_context_data(
-                user_form=user_form, profile_form=profile_form
-            )
+            self.get_context_data(user_form=user_form, profile_form=profile_form)
         )
