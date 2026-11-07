@@ -27,7 +27,9 @@ class Command(BaseCommand):
                 profile.role = Role.ADMIN
                 profile.save()
             self.stdout.write(
-                self.style.SUCCESS(f"Superuser '{username}' initialized successfully")
+                self.style.SUCCESS(
+                    f"Superuser '{username}' initialized successfully"
+                )
             )
         else:
             self.stdout.write(

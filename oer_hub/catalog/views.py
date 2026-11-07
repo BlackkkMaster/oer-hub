@@ -50,9 +50,18 @@ class CourseDetailView(TitleMixin, DetailView):
         )
 
 
-class CourseCreateView(LoginRequiredMixin, TeacherRequiredMixin, TitleMixin, CreateView):
+class CourseCreateView(
+    LoginRequiredMixin, TeacherRequiredMixin, TitleMixin, CreateView
+):
     model = Course
-    fields = ("name", "slug", "discipline", "semester", "description", "is_published")
+    fields = (
+        "name",
+        "slug",
+        "discipline",
+        "semester",
+        "description",
+        "is_published",
+    )
     template_name = "catalog/course_form.html"
     title = "Создание курса"
     success_url = reverse_lazy("catalog:course_list")
@@ -62,7 +71,9 @@ class CourseCreateView(LoginRequiredMixin, TeacherRequiredMixin, TitleMixin, Cre
         response = super().form_valid(form)
         try:
             sync_course_repository(self.object)
-            messages.success(self.request, "Курс и репозиторий в Git успешно созданы!")
+            messages.success(
+                self.request, "Курс и репозиторий в Git успешно созданы!"
+            )
         except Exception as exc:
             messages.warning(
                 self.request,

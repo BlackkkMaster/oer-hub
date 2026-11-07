@@ -11,8 +11,12 @@ def get_gitea_client() -> GiteaClient:
 def sync_user_account(user, password: Optional[str] = None):
     client = get_gitea_client()
     git_username = user.username.lower().replace("@", "_").replace(".", "_")
-    user_pass = password or os.getenv("GITEA_DEFAULT_USER_PASSWORD", "OerUserSecret2026!")
-    client.ensure_user(username=git_username, email=user.email, password=user_pass)
+    user_pass = password or os.getenv(
+        "GITEA_DEFAULT_USER_PASSWORD", "OerUserSecret2026!"
+    )
+    client.ensure_user(
+        username=git_username, email=user.email, password=user_pass
+    )
 
     profile = getattr(user, "profile", None)
     if profile and not profile.git_username:
