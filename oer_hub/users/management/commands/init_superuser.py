@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = "Create superuser from environment variables"
+    help = "Initialize superuser from environment variables"
 
     def handle(self, *args, **options):
         username = os.getenv("DJANGO_SUPERUSER_USERNAME", "admin")
@@ -27,7 +27,7 @@ class Command(BaseCommand):
                 profile.role = Role.ADMIN
                 profile.save()
             self.stdout.write(
-                self.style.SUCCESS(f"Superuser '{username}' created successfully")
+                self.style.SUCCESS(f"Superuser '{username}' initialized successfully")
             )
         else:
             self.stdout.write(

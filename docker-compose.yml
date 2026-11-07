@@ -46,11 +46,6 @@ services:
       target: dev
     container_name: oer_hub_web_dev
     restart: unless-stopped
-    command: >
-      sh -c "/app/.venv/bin/python manage.py makemigrations users catalog &&
-             /app/.venv/bin/python manage.py migrate &&
-             /app/.venv/bin/python manage.py create_admin &&
-             /app/.venv/bin/python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./oer_hub:/app/oer_hub
       - dev_sqlite_data:/app/oer_hub/data
@@ -74,10 +69,6 @@ services:
       target: prod
     container_name: oer_hub_web_prod
     restart: unless-stopped
-    command: >
-      sh -c "/app/.venv/bin/python manage.py migrate &&
-             /app/.venv/bin/python manage.py create_admin &&
-             /app/.venv/bin/gunicorn oer_hub.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     ports:
       - "8000:8000"
     env_file:
