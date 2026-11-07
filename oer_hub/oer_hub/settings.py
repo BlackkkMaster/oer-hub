@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 import dotenv
-
 from core.utils import get_bool_value
 
 BASE_DIR = Path(__file__).resolve().parent.parent

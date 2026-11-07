@@ -1,11 +1,11 @@
+from core.mixins import TeacherRequiredMixin, TitleMixin
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView
+from gitea.services import sync_course_repository
 
 from catalog.models import Course, Semester
-from core.mixins import TeacherRequiredMixin, TitleMixin
-from gitea.services import sync_course_repository
 
 
 class CourseListView(TitleMixin, ListView):

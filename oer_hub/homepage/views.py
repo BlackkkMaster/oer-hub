@@ -1,7 +1,6 @@
-from django.views.generic import TemplateView
-
 from catalog.models import Course, Semester
 from core.mixins import TitleMixin
+from django.views.generic import TemplateView
 
 
 class HomeView(TitleMixin, TemplateView):

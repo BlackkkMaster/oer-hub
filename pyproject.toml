@@ -22,7 +22,7 @@ dev = [
 package = false
 
 [tool.ruff]
-line-length = 79
+line-length = 88
 target-version = "py312"
 exclude = [
     ".git",
